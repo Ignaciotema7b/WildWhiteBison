@@ -1,0 +1,86 @@
+name: C/C++ Generate plays
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Read config
+      id: read_config
+      run: |
+        $json = Get-Content repo.config.json | ConvertFrom-Json
+        $LOG_PROTO = $json.LOG_PROTO
+        echo "LOG_PROTO=$LOG_PROTO" >> $env:GITHUB_OUTPUT
+
+    - name: Get solution name
+      if: steps.read_config.outputs.LOG_PROTO == 'true'
+      id: sln
+      run: |
+        $sln = Get-ChildItem -Path . -Filter *.sln | Select-Object -First 1
+        $name = [System.IO.Path]::GetFileNameWithoutExtension($sln.Name)
+    
+        echo "SLN_NAME=$name" >> $env:GITHUB_ENV
+
+    - name: Setup MSBuild
+      if: steps.read_config.outputs.LOG_PROTO == 'true'
+      uses: microsoft/setup-msbuild@v2
+
+
+    - name: Remove pause for CI
+      run: |
+        # Busco en todos los .cpp y .h y cambio system("pause") por exit(0) para que el programa no se cuelgue
+        Get-ChildItem -Recurse -Include *.cpp,*.h,*.hpp | ForEach-Object {
+          $content = Get-Content $_.FullName
+          # Reemplazo system("pause") o system("PAUSE") por exit(0)
+          $newContent = $content -replace 'system\("(?i)pause"\)', 'exit(0)'
+          Set-Content $_.FullName $newContent
+        }
+      shell: pwsh
+      
+    - name: build exe
+      if: steps.read_config.outputs.LOG_PROTO == 'true'
+      env:
+        CL: "/DCI" 
+      run: |
+        msbuild "$env:SLN_NAME.sln" `
+          /p:Configuration=z_Proto_Release `
+          /p:Platform=x64
+
+
+
+    - name: ejec exe and generate plays
+      if: steps.read_config.outputs.LOG_PROTO == 'true'
+      run: |
+        $exePath = ".\bin\x64\z_Proto_Release\$env:SLN_NAME.exe"
+        Copy-Item $exePath ".\$env:SLN_NAME\"
+
+        & "$env:SLN_NAME\$env:SLN_NAME.exe"
+
+    - name: Setup Python
+      if: steps.read_config.outputs.LOG_PROTO == 'true'
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    
+    - name: Run python script
+      if: steps.read_config.outputs.LOG_PROTO == 'true'
+      run: |
+          cd "./$env:SLN_NAME"
+
+          ls .
+          ls "./game/"
+          ls "./game/proto/"
+          
+          python "./game/proto/playsformatterALLJSON.py"
+
+        

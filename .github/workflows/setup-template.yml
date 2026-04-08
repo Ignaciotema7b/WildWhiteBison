@@ -1,0 +1,90 @@
+name: Setup Project from Template
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Check if already initialized
+        id: check_init
+        run: |
+          if [ "${GITHUB_REPOSITORY##*/}" = "GameTemplate" ]; then
+            echo "initialized=true" >> $GITHUB_OUTPUT
+          else
+            echo "initialized=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Stop if already initialized
+        if: steps.check_init.outputs.initialized == 'true'
+        run: |
+          echo "El repositorio ya fue inicializado"
+          exit 0
+
+      - name: Get repo name
+        id: vars
+        if: steps.check_init.outputs.initialized != 'true'
+        run: |
+          REPO_NAME=${GITHUB_REPOSITORY##*/}
+          if [[ ! "${REPO_NAME:0:1}" =~ [a-zA-Z] ]]; then
+            REPO_NAME="_$REPO_NAME"
+          fi
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+              
+
+      - name: Replace GameTemplate with repo name
+        if: steps.check_init.outputs.initialized != 'true'
+        run: |
+          echo "Nuevo nombre: $REPO_NAME"
+
+          # Reemplazo en contenido de archivos
+          grep -rl "GameTemplate" . \
+            --exclude-dir=.git \
+            --exclude-dir=.github \
+            --exclude="*.md" \
+            --binary-files=without-match \
+            | xargs sed -i "s/GameTemplate/$REPO_NAME/g"
+
+
+      - name: Rename files (only filenames)
+        if: steps.check_init.outputs.initialized != 'true'
+        run: |
+          find . -type f -name "*GameTemplate*" | while read file; do
+            dir=$(dirname "$file")
+            base=$(basename "$file")
+            newbase=$(echo "$base" | sed "s/GameTemplate/$REPO_NAME/g")
+            mv "$file" "$dir/$newbase"
+          done
+      
+      - name: Rename directories (deep first)
+        if: steps.check_init.outputs.initialized != 'true'
+        run: |
+          find . -depth -type d -name "*GameTemplate*" | while read dir; do
+            newdir=$(echo "$dir" | sed "s/GameTemplate/$REPO_NAME/g")
+            mv "$dir" "$newdir"
+          done
+
+      - name: Commit changes
+        if: steps.check_init.outputs.initialized != 'true'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          
+          if [ -f ".github/workflows/setup-template.yml" ]; then
+            git rm -r .github/workflows/setup-template.yml
+          fi
+
+          git add . ':!.github/workflows/setup-template.yml'
+
+          git commit -m "Auto-rename project to $REPO_NAME" || echo "No changes"
+          git push
