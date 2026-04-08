@@ -78,7 +78,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{822414bd-d61e-4435-96a0-a3e324d5ce01}</ProjectGuid>
-    <RootNamespace>GameTemplate</RootNamespace>
+    <RootNamespace>WildWhiteBison</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -613,10 +613,10 @@
     <ClCompile Include="CommonLib\src\Symbol.cpp" />
     <ClCompile Include="CommonLib\src\Weighted_values.cpp" />
     <ClCompile Include="CommonLib\src\Win_and_RTP_distribution.cpp" />
-    <ClCompile Include="src\GameTemplate.cpp" />
-    <ClCompile Include="src\GameTemplate_config.cpp" />
-    <ClCompile Include="src\GameTemplate_main.cpp" />
-    <ClCompile Include="src\GameTemplate_stats.cpp" />
+    <ClCompile Include="src\WildWhiteBison.cpp" />
+    <ClCompile Include="src\WildWhiteBison_config.cpp" />
+    <ClCompile Include="src\WildWhiteBison_main.cpp" />
+    <ClCompile Include="src\WildWhiteBison_stats.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonLib\include\Game.h" />
@@ -632,9 +632,9 @@
     <ClInclude Include="CommonLib\include\Symbol.h" />
     <ClInclude Include="CommonLib\include\Weighted_values.h" />
     <ClInclude Include="CommonLib\include\Win_and_RTP_distribution.h" />
-    <ClInclude Include="src\GameTemplate.h" />
-    <ClInclude Include="src\GameTemplate_config.h" />
-    <ClInclude Include="src\GameTemplate_stats.h" />
+    <ClInclude Include="src\WildWhiteBison.h" />
+    <ClInclude Include="src\WildWhiteBison_config.h" />
+    <ClInclude Include="src\WildWhiteBison_stats.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

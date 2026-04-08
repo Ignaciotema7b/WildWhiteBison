@@ -1,7 +1,7 @@
-#include "GameTemplate.h"
+#include "WildWhiteBison.h"
 #include <filesystem>
 
-void GameTemplate::generate_json(Game_info info)
+void WildWhiteBison::generate_json(Game_info info)
 {
 	json j;
 
@@ -29,7 +29,7 @@ void GameTemplate::generate_json(Game_info info)
 	o << std::setw(2) << j << std::endl;
 }
 
-void GameTemplate::init(Game_info info)
+void WildWhiteBison::init(Game_info info)
 {	
 	config.init(info);
 	Slot::init(info.n_reels, info.number_of_trackers, info.number_of_rows, info.bet, (unsigned)config.symbols_list.size());
@@ -56,7 +56,7 @@ void GameTemplate::init(Game_info info)
 
 }
 
-void GameTemplate::play(unsigned long long plays)
+void WildWhiteBison::play(unsigned long long plays)
 {
 	unsigned using_reel_set;
 
