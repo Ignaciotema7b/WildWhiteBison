@@ -84,7 +84,7 @@ jobs:
 
           cd "./game/proto/"
           
-          python "./game/proto/playsformatterALLJSON.py"
+          python "playsformatterALLJSON.py"
 
     - name: Compress JSON files
       if: steps.read_config.outputs.LOG_PROTO == 'true'
