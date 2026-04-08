@@ -87,12 +87,14 @@ jobs:
     - name: Compress JSON files
       if: steps.read_config.outputs.LOG_PROTO == 'true'
       run: |
+        cd "./$env:SLN_NAME"
         Compress-Archive -Path ".\game\proto\*.json" -DestinationPath ".\game\proto\plays.zip" -Force
 
         
     - name: Commit and push zip
       if: steps.read_config.outputs.LOG_PROTO == 'true'
       run: |
+        cd "./$env:SLN_NAME"
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
     
