@@ -37,6 +37,7 @@ jobs:
 
 
     - name: Remove pause for CI
+      if: steps.read_config.outputs.LOG_PROTO == 'true'
       run: |
         # Busco en todos los .cpp y .h y cambio system("pause") por exit(0) para que el programa no se cuelgue
         Get-ChildItem -Recurse -Include *.cpp,*.h,*.hpp | ForEach-Object {
@@ -82,5 +83,24 @@ jobs:
           ls "./game/proto/"
           
           python "./game/proto/playsformatterALLJSON.py"
+
+    - name: Compress JSON files
+      if: steps.read_config.outputs.LOG_PROTO == 'true'
+      run: |
+        Compress-Archive -Path ".\game\proto\*.json" -DestinationPath ".\game\proto\plays.zip" -Force
+
+        
+    - name: Commit and push zip
+      if: steps.read_config.outputs.LOG_PROTO == 'true'
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+    
+        git add .\game\proto\plays.zip
+    
+        git commit -m "Add generated plays zip" || echo "No changes to commit"
+    
+        git push
+
 
         
