@@ -1,5 +1,5 @@
 //  ***************************************************************
-//  WildWhiteBison - Creation date: 25/03/2026 13:36:03
+//  WildWhiteBison - Creation date: 25/03/2026 8:45:36
 //  -------------------------------------------------------------
 //  License: Uh, check for license.txt or license.md for that?
 //
@@ -26,7 +26,7 @@ using namespace std;
 
 int main()
 {
-    WildWhiteBison* game = new WildWhiteBison() ;
+    WildWhiteBison* game = new WildWhiteBison();
 
     string game_name = "WildWhiteBison";
 
@@ -46,7 +46,7 @@ int main()
         folder_config = "config";
         folder_results = "results";
     }
-    
+
     Game_info info;
 
     info.load_info(folder_config);
