@@ -61,10 +61,10 @@ jobs:
     - name: ejec exe and generate plays
       if: steps.read_config.outputs.LOG_PROTO == 'true'
       run: |
-        $exePath = ".\bin\x64\z_Proto_Release\$env:SLN_NAME.exe"
-        Copy-Item $exePath ".\$env:SLN_NAME\"
+        cd .\$env:SLN_NAME\
+        $exePath = "..\bin\x64\z_Proto_Release\$env:SLN_NAME.exe"
 
-        & "$env:SLN_NAME\$env:SLN_NAME.exe"
+        & $exePath
 
     - name: Setup Python
       if: steps.read_config.outputs.LOG_PROTO == 'true'
