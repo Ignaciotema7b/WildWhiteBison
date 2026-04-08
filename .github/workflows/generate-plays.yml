@@ -81,6 +81,8 @@ jobs:
           ls .
           ls "./game/"
           ls "./game/proto/"
+
+          cd "./game/proto/"
           
           python "./game/proto/playsformatterALLJSON.py"
 
